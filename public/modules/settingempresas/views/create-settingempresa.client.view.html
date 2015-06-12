@@ -1,0 +1,192 @@
+<div class="portlet light" data-ng-controller="SettingempresasController" data-ng-init="initmask()">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-plus-circle font-green-sharp"></i>
+            <span class="caption-subject font-green-sharp bold uppercase">Configuración de Empresa</span>
+        </div>
+    </div>
+    <div class="portlet-body">
+            <div  data-ng-show="error" class="Metronic-alerts alert alert-danger fade in">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                <i class="fa-lg fa fa-warning"></i>{{error}}
+            </div>
+
+
+            <form role="form" name="form" class="form-horizontal" data-ng-submit="create()" >
+                <div class="form-body">
+
+                    <div class="form-group" >
+                        <label class="col-md-3 control-label" for="name">Razon Social</label>
+                        <div class="col-md-9">
+                            <input data-ng-model="name" type="text" class="form-control" id="name" name="name" placeholder="Ingrese el nombre o razón social" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="cuit">CUIT</label>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                <i class="fa fa-slack"></i>
+                                </span>
+                                <input ng-model="app.cuit" type="text" class="form-control" id="cuit" placeholder="Ingrese el CUIT" required >
+                            </div>
+                        </div> 
+
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="iibb">IIBB</label>
+                            <div class="col-md-3">
+                                <div class="input-group">
+                                    <input data-ng-model="iibb" type="text" class="form-control" id="iibb" placeholder="Nro. Ingresos Brutos" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">                 
+                        <label class="col-md-3 control-label" for="form_control_1">Condición IVA</label>
+                        <div class="col-md-9">
+                            <select id="condicioniva" class="form-control glowing-border" ng-model="condicioniva" required>
+                                <option style="color:gray" value="" disabled="true">Seleccione una opción</option>
+                                <option data-ng-repeat="iva in condicionivas" ng-if="iva.idafip < 3" value="{{iva._id}}">{{iva.name}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="telefono">Teléfono</label>
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                <i class="fa fa-phone"></i>
+                                </span>
+                                <input data-ng-model="telefono" type="text" class="form-control" id="telefono" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="domicilio">Domicilio</label>
+                        <div class="col-md-9">
+                            <input data-ng-model="domicilio" type="text" class="form-control" id="domicilio" placeholder="">
+                        </div>
+                    </div>                                                
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" for="provincia">Provincia</label>
+                        <div class="col-md-3">
+                            <select id="provincia" class="form-control glowing-border" ng-model="provincia">
+                                <option style="color:gray" value="" disabled="true"></option>
+                                <option data-ng-repeat="prov in provincias" value="{{prov.id}}">{{prov.name}}</option>
+                            </select>
+                        </div>
+                        <label class="col-md-3 control-label" for="localidad">Localidad</label>
+                        <div class="col-md-3">
+                            <select id="localidad" class="form-control glowing-border" ng-model="localidad">
+                                <option style="color:gray" value="" disabled="true"></option>
+                                <option data-ng-repeat="depto in departamentos" value="{{depto.id}}">{{depto.name}}</option>
+                            </select>
+                        </div>
+                    </div>  
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" >Fecha Ini. Activades</label>
+                        <div class="col-md-3">
+                            <input name="inicioactividades" type="date" class="form-control input-sm" datepicker-popup ng-model="inicioactividades" min-date="minDate"  ng-required="true" close-text="Close" required />
+                        </div>
+                        <label class="col-md-3 control-label" >Punto de Venta</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-filter input-sm" name="puntoventa" data-ng-model="puntoventa" ui-number-mask="0">
+                        </div>
+                    </div>  
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" >Nro. de comprobantes</label>
+                        <div class="col-md-3" ng-show="mostrarRI()">
+                            <div class="alert alert-block alert-info fade in">
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Factura A </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroFacturaA" data-ng-model="nroFacturaA" ui-number-mask="0">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Nota de Crédito A </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroNCA" data-ng-model="nroNCA" ui-number-mask="0">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Nota de Débito A </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroNDA" data-ng-model="nroNDA" ui-number-mask="0">
+                                    </div> 
+                                </div>                           
+                            </div>
+                        </div>
+                        <div class="col-md-3" ng-show="mostrarRI()">
+                            <div class="alert alert-block alert-info fade in">
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Factura B </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroFacturaB" data-ng-model="nroFacturaB" ui-number-mask="0">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Nota de Crédito B </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroNCB" data-ng-model="nroNCB" ui-number-mask="0">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Nota de Débito B </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroNDB" data-ng-model="nroNDB" ui-number-mask="0">
+                                    </div> 
+                                </div>                           
+                            </div>
+                        </div>
+                        <div class="col-md-3" ng-hide="mostrarRI()">
+                            <div class="alert alert-block alert-info fade in">
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Factura C </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroFacturaC" data-ng-model="nroFacturaC" ui-number-mask="0">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Nota de Crédito C </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroNCC" data-ng-model="nroNCC" ui-number-mask="0">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Nota de Débito C </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroNDC" data-ng-model="nroNDC" ui-number-mask="0">
+                                    </div> 
+                                </div>                           
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-3 control-label" ></label>
+                        <div class="col-md-3">
+                            <div class="alert alert-block alert-info fade in">
+                                <div class="row">
+                                    <label class="col-md-7 control-label" >Recibos </label>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-filter input-sm" name="nroRecibo" data-ng-model="nroRecibo" ui-number-mask="0">
+                                    </div>
+                                </div>                 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <div class="row">
+                            <div class="col-md-offset-2 col-md-10">
+                                <a href="#!/clientes" class="btn default">Cancelar</a>
+                                <button type="submit" class="btn blue">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</div>
+

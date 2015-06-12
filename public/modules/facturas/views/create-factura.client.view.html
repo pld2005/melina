@@ -1,0 +1,275 @@
+<div class="portlet light" data-ng-controller="FacturasController" data-ng-init="initFactura()">
+    <!--div>
+   <mi-combo route="combocliente"  ng-model="asyncSelected"></mi-combo>
+
+    <pre>Model: {{asyncSelected | json}}</pre>
+    <button ng-click="verificar()">Verificar</button>
+    </div-->
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="fa fa-plus-circle font-green-sharp"></i>
+            <span class="caption-subject font-green-sharp bold uppercase">Nueva factura</span>
+        </div>
+        {{user.displayname}}
+    </div>
+    <div class="portlet-body">
+        <div  data-ng-show="error" class="Metronic-alerts alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+            <i class="fa-lg fa fa-warning"></i>  {{error}}
+        </div>
+        <section "factura">
+            <form  name="myform" data-ng-submit="create()" novalidate>
+                <fieldset>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12" data-ng-controller="ClientesController" data-ng-init="find()">
+                            <div class="portlet blue-hoki box">
+                                <div class="portlet-body">
+                                    
+                                    <div class="row static-info" ng-class="{ 'has-error': myform.cliente.$invalid }">
+                                        <div class="col-md-3">
+                                             Cliente:
+                                        </div><!--a class="btn btn-success btn-xs" href="#/clientes/create" data-target="#ajax" data-toggle="modal">Nuevo</a>
+                                             <button  class="btn btn-success btn-xs" type="button">
+                                                     Nuevo</button-->
+                                        <div class="col-md-9" >
+                                          <ui-select name="cliente"
+                                                     data-ng-model="person.selected" 
+                                                     class="select2-container form-control select2me" 
+                                                     ng-disabled="disabled" required
+                                                     on-select="generaNroFactura()">
+                                            <ui-select-match placeholder="Seleccione un cliente...">{{$select.selected.name}}</ui-select-match>
+                                            <ui-select-choices repeat="person in clientes | propsFilter: {name: $select.search, cuit: $select.search}">
+                                              <div ng-bind-html="person.name | highlight: $select.search"></div>
+                                              <small>
+                                                CUIT: <span ng-bind-html="''+person.cuit | formatCuit"></span>
+                                              </small>
+                                            </ui-select-choices>
+                                          </ui-select>  
+                                          <p ng-show="{{myform.cliente.$invalid && myform.cliente.$dirty}}" class="help-block">You name is required.</p>                                  
+                                        </div>
+                                    </div>
+                                    <div class="row static-info">
+                                        <div class="col-md-3">
+                                             CUIT:
+                                        </div>
+                                        <div class="col-md-9">
+                                             <input name="cuit" type="text" class="form-control input-sm" value="{{person.selected.cuit | formatCuit}}" disabled="" >
+                                        </div>
+                                    </div>
+                                    <div class="row static-info">
+                                        <div class="col-md-3">
+                                             IVA:
+                                        </div>
+                                        <div class="col-md-9">
+                                             <input name="iva" type="text" class="form-control  input-sm" value="{{person.selected.condicioniva.name}}" disabled="" >
+                                        </div>
+                                    </div>
+                                    <div class="row static-info">
+                                        <div class="col-md-3">
+                                             Domicilio:
+                                        </div>
+                                        <div class="col-md-9">
+                                             <input name="domicilio" type="text" class="form-control  input-sm" value="{{person.selected.domicilio}}" disabled=""  >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-sm-12">
+                            <div class="portlet blue-hoki box">
+
+                                <div class="portlet-body">
+                                    <div class="row static-info">
+                                        <div class="col-md-5">
+                                            Número:
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input name="numeroCompleto" type="text" class="form-control input-sm" placeholder="Disabled" disabled=""  data-ng-model="numeroCompleto">
+                                        </div>
+                                    </div>
+                                    <div class="row static-info">
+                                        <div class="col-md-5">
+                                             Tipo de Comprobante:
+                                        </div>
+                                        <div class="col-md-7">
+                                            <select ng-model="TipoComprob" ng-change="generaNroFactura()">
+                                                <option value="1">Factura</option>
+                                                <option value="2">Nota Débito</option>
+                                                <option value="3">Nota Crédito</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row static-info">
+                                        <div class="col-md-5">
+                                            Fecha:
+                                        </div>
+                                        <div class="col-md-7">
+                                            <input name="fecha" type="date" class="form-control input-sm" datepicker-popup ng-model="fecha" min-date="minDate"  ng-required="true" close-text="Close" />
+                                        </div>
+                                    </div>
+                                    <div class="row static-info">
+                                        <div class="col-md-5">
+                                            Fecha de cobro:
+                                        </div>
+                                        <div class="col-md-7">
+
+                                            <input name="fechaCobro" type="date" class="form-control input-sm" datepicker-popup ng-model="fechaCobro" min-date="minDate"  ng-required="true" close-text="Close" />                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="portlet blue-hoki box">
+                                <div class="portlet-body">
+                                    <div class="table">
+                                        <table class="table table-striped" id="datatable_orders">
+                                            <thead>
+                                                <tr>
+                                                    <th width="2%"></th>
+                                                    <th width="2%">Cant.</th>
+                                                    <th width="41%">Producto/Servicio</th>
+                                                    <th width="12%">Precio</th>
+                                                    <th width="10%">% Dcto.</th>
+                                                    <th width="10%">IVA</th>
+                                                    <th width="10%">Importe IVA</th>
+                                                    <th width="13%">Sub total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="item in detalle">
+                                                    <td>
+                                                        <button type="button" ng-click="BorrarItem($index)"  class="btn btn-sm btn-danger" tooltip-placement="right"  tooltip="Eliminar">
+                                                            <i class="glyphicon glyphicon-trash"></i>
+                                                        </button>                                                
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control form-filter input-sm" name="cantidad" data-ng-model="item.cantidad" ui-number-mask="0"  value="1" ng-change="CalcularIVA(item)">
+                                                    </td>
+                                                    <td>
+                                                        <div ng-show="facturarproductos" data-ng-controller="ProductosController" data-ng-init="find()">
+                                                            <ui-select name="producto" 
+                                                                     ng-change="SeleccionarIvaSegunProducto(item)" 
+                                                                     ng-model="item.producto.selected"
+                                                                     class="select2-container form-control  select2me input-sm"
+                                                                     ng-disabled="disabled">
+                                                                <ui-select-match placeholder="Seleccione un producto o servicio...">{{$select.selected.name}}</ui-select-match>
+                                                                <ui-select-choices repeat="producto in productos | propsFilter: {name: $select.search}">
+                                                                    <div ng-bind-html="producto.name | highlight: $select.search"></div>
+                                                                </ui-select-choices>
+                                                            </ui-select>
+                                                        </div>
+                                                        <div ng-hide="facturarproductos">
+                                                            <input type="text" class="form-control form-filter input-sm" name="producto" data-ng-model="item.producto.selected" >
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control form-filter input-sm-right" name="precio" data-ng-model="item.precio" min="0" ui-number-mask="2" ng-change="CalcularIVA(item)">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control form-filter input-sm-right" name="descuento" data-ng-model="item.descuento" min="0" max="100" ui-percentage-mask="2" value="0" ng-change="CalcularIVA(item)">
+                                                    </td>
+                                                    <td>
+                                                        <select name="tipoiva" class="form-control glowing-border input-sm" 
+                                                                data-ng-model="item.tipoiva"
+                                                                ng-change="CalcularIVA(item)"
+                                                                ng-options="obj.name for obj in tipoivas track by obj.idafip"
+                                                                >
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                         <input type="text" class="form-control form-filter input-sm-right" name="valoriva" data-ng-model="item.valoriva" min="0"  ui-number-mask="2" value="" disabled="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control form-filter input-sm-right" name="subtotal" data-ng-model="item.subtotal" min="0"  ui-number-mask="2" value="{{CalcularSubTotal(item) | number:2}}" disabled="">
+                                                        <input type="hidden" class="form-control form-filter input-sm-right" name="item.neto" data-ng-model="item.neto" min="0"  ui-number-mask="2" >
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <button type="button" ng-click="AgregarItem()" class="btn btn-sm green-meadow" >Agregar Item </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="portlet blue-hoki box">
+                                <div class="portlet-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <a class="btn default">Cerrar</a>
+                                        <button type="submit" class="btn blue" >Guardar</button>
+                                            
+                                            <a class="btn btn-info">Enviar a la AFIP</a>
+
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row  static-info">
+                                                <div class="col-md-8 text-right">
+                                                    Neto Gravado:
+                                                </div>
+                                                <div class="col-md-4">
+                                                        <input name="neto1" type="text" class="form-control input-sm-right" disabled=""  data-ng-model="neto1" ui-number-mask="2">
+                                                </div>
+                                            </div>
+                                            <div class="row  static-info">
+                                                <div class="col-md-8 text-right">
+                                                    NO Gravado:
+                                                </div>
+                                                <div class="col-md-4">
+                                                        <input name="netoNoGravado" type="text" class="form-control input-sm-right" disabled=""  data-ng-model="netoNoGravado" ui-number-mask="2">
+                                                </div>
+                                            </div>
+                                            <div class="row  static-info">
+                                                <div class="col-md-8 text-right">
+                                                    Exento:
+                                                </div>
+                                                <div class="col-md-4">
+                                                        <input name="exento" type="text" class="form-control input-sm-right" disabled=""  data-ng-model="exento" ui-number-mask="2">
+                                                </div>
+                                            </div>
+
+                                            <div class="row  static-info">
+                                                <div class="col-md-8 text-right">
+                                                    Total IVA 21%:
+                                                </div>
+                                                <div class="col-md-4">
+                                                        <input name="iva21" type="text" class="form-control input-sm-right" disabled=""  data-ng-model="iva21" ui-number-mask="2">
+                                                </div>
+                                            </div>
+                                            <div class="row  static-info">
+                                                <div class="col-md-8 text-right">
+                                                    Total IVA 10.5%:
+                                                </div>
+                                                <div class="col-md-4">
+                                                        <input name="iva105" type="text" class="form-control input-sm-right" disabled=""  data-ng-model="iva105" ui-number-mask="2">
+                                                </div>
+                                            </div>
+                                            <div class="row  static-info">
+                                                <div class="col-md-8 text-right">
+                                                    Total:
+                                                </div>
+                                                <div class="col-md-4">
+                                                        <input name="total" type="text" class="form-control input-sm-right" disabled=""  data-ng-model="total"ui-number-mask="2">
+                                                </div>
+                                            </div>                                    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+           </form>
+        </section>
+        <section "pdf">
+hola pdf
+        </section>
+    </div>
+</div>

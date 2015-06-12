@@ -1,0 +1,34 @@
+<section class="login" data-ng-controller="AuthenticationController">
+
+	<div class="content">
+		<form class="register-form"  data-ng-submit="signup()"  method="post">
+			<h3>REGISTRESE GRATIS!</h3>
+			<div data-ng-show="error" class="alert alert-danger">
+				<button class="close" data-close="alert"></button>
+				<span data-ng-bind="error"></span>
+			</div>
+			<fieldset>
+				<div class="form-group">
+					<label class="control-label visible-ie8 visible-ie9">Nombre</label>
+					<input class="form-control placeholder-no-fix" type="text" placeholder="Nombre" name="nombre" data-ng-model="credentials.firstName" required id="firstName" name="firstName" />
+				</div>
+				<div class="form-group">
+					<label class="control-label visible-ie8 visible-ie9">Apellido</label>
+					<input class="form-control placeholder-no-fix" type="text" placeholder="Apellido" name="apellido" data-ng-model="credentials.lastName" required id="lastName" name="lastName" />
+				</div>
+				<div class="form-group">
+					<label class="control-label visible-ie8 visible-ie9">Email</label>
+					<input class="form-control placeholder-no-fix" type="email" placeholder="Email" name="email" data-ng-model="credentials.email" required id="email" name="email" />					
+				</div>
+				<div class="form-group">
+					<label class="control-label visible-ie8 visible-ie9">Contraseña</label>
+					<input class="form-control placeholder-no-fix" type="password" placeholder="Contraseña" name="password" data-ng-model="credentials.password" required id="password" name="password" />
+				</div>
+				<div class="text-center form-group">
+					<button type="submit" class="btn btn-large btn-primary">CREAR CUENTA GRATIS</button>&nbsp; or&nbsp;
+					<a href="/#!/signin" class="show-signup">Ingresar</a>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+</section>

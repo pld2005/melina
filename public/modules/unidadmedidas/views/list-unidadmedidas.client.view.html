@@ -1,0 +1,19 @@
+<section data-ng-controller="UnidadmedidasController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Unidadmedidas</h1>
+    </div>
+    <div class="list-group">
+        <a data-ng-repeat="unidadmedida in unidadmedidas" data-ng-href="#!/unidadmedidas/{{unidadmedida._id}}" class="list-group-item">
+			<small class="list-group-item-text">
+				Posted on
+				<span data-ng-bind="unidadmedida.created | date:'medium'"></span>
+				by
+				<span data-ng-bind="unidadmedida.user.displayName"></span>
+			</small>
+			<h4 class="list-group-item-heading" data-ng-bind="unidadmedida.name"></h4>
+        </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-hide="!unidadmedidas.$resolved || unidadmedidas.length">
+    	No Unidadmedidas yet, why don't you <a href="/#!/unidadmedidas/create">create one</a>?
+    </div>
+</section>
